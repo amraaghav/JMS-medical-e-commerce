@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Products from "../pages/Products";
 
 const Hero = () => {
   const medicalImages = [
@@ -17,6 +18,7 @@ const Hero = () => {
   }, []);
 
   return (
+    <div>
     <section className="relative w-full h-[300px] md:h-[350px] flex items-center justify-center bg-gray-100">
       <div className="relative w-full h-full overflow-hidden">
         {medicalImages.map((image, index) => (
@@ -30,7 +32,11 @@ const Hero = () => {
           />
         ))}
       </div>
+    
     </section>
+    <Products/>
+    </div>
+    
   );
 };
 
