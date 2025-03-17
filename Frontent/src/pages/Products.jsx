@@ -1,46 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const Products = () => {
-  // Dummy product data
-  const products = [
-    {
-      id: 1,
-      name: "Nike Running Shoes",
-      description: "Comfortable and stylish running shoes.",
-      price: "₹4,999",
-      image: "https://via.placeholder.com/200" // Replace with actual image URL
-    },
-    {
-      id: 2,
-      name: "Samsung Galaxy S24",
-      description: "Latest smartphone with advanced features.",
-      price: "₹89,999",
-      image: "https://via.placeholder.com/200"
-    },
-    {
-      id: 3,
-      name: "Sony Wireless Headphones",
-      description: "Noise-canceling headphones with superior sound.",
-      price: "₹7,499",
-      image: "https://via.placeholder.com/200"
-    }
-  ];
+const ProductPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    axios.get(`http://localhost:3000/api/items/${id}`)
+      .then((res) => {
+        console.log("Fetched Product:", res.data);
+        setProduct(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Fetch Error:", err);
+        setError("Error fetching product details");
+        setLoading(false);
+      });
+  }, [id]);
+  const handleAddToCart = () => {
+    console.log("Added to cart", product);
+    // Add cart functionality here
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4">
-      {products.map((product) => (
-        <div key={product.id} className="border rounded-lg p-4 shadow-lg">
-          <img src={product.image} alt={product.name} className="w-full h-40 object-cover rounded-lg mb-3" />
-          <h2 className="text-xl font-semibold">{product.name}</h2>
-          <p className="text-gray-600">{product.description}</p>
-          <p className="text-lg font-bold text-blue-600 mt-2">{product.price}</p>
-          <button className="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-            Add to Cart
-          </button>
-        </div>
-      ))}
+    <div className="p-6 max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">{product.name}</h2>
+      <img
+        src={product.images?.[0] || "https://via.placeholder.com/300"}
+        alt={product.name}
+        className="w-full h-64 object-cover rounded-md mb-4"
+      />
+      <p className="text-gray-700 mb-2">{product.description}</p>
+      <p className="text-lg font-semibold mb-4">Price: ${product.price}</p>
+      <button
+        onClick={handleAddToCart}
+        className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md w-full"
+      >
+        Add to Cart
+      </button>
     </div>
   );
 };
 
-export default Products;
+export default ProductPage;
