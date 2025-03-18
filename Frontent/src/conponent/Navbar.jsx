@@ -46,8 +46,8 @@ const Navbar = ({ setHideHero }) => {
           >
             <Link to="/" className="block md:inline text-gray-700 py-2">HOME</Link>
             <Link to="/medicines" className="block md:inline text-gray-700 py-2">MEDICINES</Link>
-            <a className="block md:inline text-gray-700 py-2" href="#">ABOUT</a>
-            <a className="block md:inline text-gray-700 py-2" href="#">CONTACT</a>
+            <Link className="block md:inline text-gray-700 py-2" to='/about'>ABOUT</Link>
+            <Link to='/contact' className="block md:inline text-gray-700 py-2" >CONTACT</Link>
           </nav>
 
           {/* User Actions */}

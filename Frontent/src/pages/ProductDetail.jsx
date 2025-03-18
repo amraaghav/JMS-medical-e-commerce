@@ -10,20 +10,23 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState("");
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/items/${id}`)
+    axios.get(`http://localhost:5000/api/items/${id}`) // ✅ Fix API URL
       .then((res) => {
         console.log("Fetched Product:", res.data);
         setProduct(res.data);
+        setSelectedImage(res.data.images?.[0] || ""); // ✅ Set first image as default
         setLoading(false);
       })
       .catch((err) => {
         console.error("Fetch Error:", err);
-        setError("Error fetching product details");
+        setError("Error fetching product");
         setLoading(false);
       });
   }, [id]);
+
   if (loading) return <p className="text-center text-gray-500">Loading product...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
+  if (!product) return <p className="text-center text-gray-500">No product found.</p>;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -32,10 +35,10 @@ const ProductDetail = () => {
       <div className="grid grid-cols-4 gap-4">
         {/* ✅ Thumbnail Images */}
         <div className="col-span-1 flex flex-col space-y-2">
-          {product.images.map((img, index) => (
+          {(product.images || []).map((img, index) => ( // ✅ Prevent error if `images` is undefined
             <img
               key={index}
-              src={`http://localhost:3000/uploads/${img}`}
+              src={`http://localhost:5000/uploads/${img}`}
               alt={`Thumbnail ${index}`}
               className={`w-20 h-20 object-cover border-2 cursor-pointer ${
                 selectedImage === img ? "border-blue-500" : "border-gray-300"
@@ -47,11 +50,15 @@ const ProductDetail = () => {
 
         {/* ✅ Main Image */}
         <div className="col-span-3">
-          <img
-            src={`http://localhost:3000/uploads/${selectedImage}`}
-            alt="Selected Product"
-            className="w-full h-96 object-cover rounded-lg"
-          />
+          {selectedImage ? (
+            <img
+              src={`http://localhost:5000/uploads/${selectedImage}`}
+              alt="Selected Product"
+              className="w-full h-96 object-cover rounded-lg"
+            />
+          ) : (
+            <p className="text-center text-gray-500">No image available</p> // ✅ Fallback if no image
+          )}
         </div>
       </div>
 

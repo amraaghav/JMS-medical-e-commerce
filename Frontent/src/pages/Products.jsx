@@ -1,30 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const ProductPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/items/${id}`)
+    axios.get(`http://localhost:5000/api/items/${id}`)
       .then((res) => {
-        console.log("Fetched Product:", res.data);
         setProduct(res.data);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Fetch Error:", err);
         setError("Error fetching product details");
         setLoading(false);
       });
   }, [id]);
+
   const handleAddToCart = () => {
     console.log("Added to cart", product);
-    // Add cart functionality here
   };
 
   if (loading) return <div>Loading...</div>;
