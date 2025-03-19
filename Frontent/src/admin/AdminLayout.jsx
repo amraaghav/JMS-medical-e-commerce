@@ -6,8 +6,8 @@ const AdminLayout = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogout = () => {
-    console.log("Logging out...");
-    // Add actual logout functionality here
+ 
+    
   };
 
   return (

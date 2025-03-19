@@ -85,7 +85,7 @@ const Contact = () => {
       <div className="mt-8 text-center">
         <h3 className="text-xl font-semibold">Our Contact Information</h3>
         <p className="text-gray-700">📍 Hospital Road, Ara, India</p>
-        <p className="text-gray-700">📞 +91 6202853534</p>
+        <p className="text-gray-700">📞 +91 6202813534</p>
         <p className="text-gray-700">📧 jsmmedicalshop@gmail.com</p>
       </div>
 

@@ -1,8 +1,10 @@
 import React from "react";
+import { useAuth } from "../context/AuthContext";
 import { FiPlus, FiList, FiShoppingCart } from "react-icons/fi";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 
 const AdminPanel = () => {
+  // const { admin } = useAuth();
   // Sample Data for Line Graph
   const orderData = [
     { name: "Jan", orders: 20 },
@@ -23,7 +25,7 @@ const AdminPanel = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      {/* <h1 className="text-3xl font-bold mb-6">Admin Dashboard {admin?.name}</h1> */}
 
       {/* Dashboard Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

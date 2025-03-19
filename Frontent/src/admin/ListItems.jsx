@@ -9,7 +9,7 @@ const ListItems = () => {
   // ✅ Fetch all items from API
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/items")
+      .get("http://localhost:5000/api/items")
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("Error fetching items:", err));
   }, []);
@@ -17,7 +17,7 @@ const ListItems = () => {
   // ✅ Function to delete an item
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/items/${id}`);
+      await axios.delete(`http://localhost:5000/api/items/${id}`);
       setProducts(products.filter((product) => product._id !== id));
     } catch (error) {
       console.error("Error deleting item:", error);
@@ -33,14 +33,13 @@ const ListItems = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:3000/api/items/${editItem._id}`, editItem);
+      await axios.put(`http://localhost:5000/api/items/${editItem._id}`, editItem);
       setProducts(products.map((item) => (item._id === editItem._id ? editItem : item)));
       setEditItem(null); // Close the edit form after updating
     } catch (error) {
       console.error("Error updating item:", error);
     }
   };
-
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">All Products List</h2>
