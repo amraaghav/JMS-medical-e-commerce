@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Products from "../pages/Products";
 import SearchBar from "./SearchBar";
 
+import Home from "../pages/Home";
+
 const Hero = () => {
   const medicalImages = [
     { src: "/images/a.webp", alt: "Pharmacy Store" },
@@ -36,7 +38,7 @@ const Hero = () => {
       </div>
     
     </section>
-    <Products/>
+        <Home/>
     </div>
     
   );

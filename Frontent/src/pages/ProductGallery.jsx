@@ -1,52 +1,36 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ProductGallery = () => {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/products")
-      .then((response) => {
-        console.log("API Response:", response.data); // ✅ Check API response in console
-        setProducts(response.data);
-      })
-      .catch((error) => console.error("Error fetching products:", error));
+    axios.get("http://localhost:5000/api/products")
+      .then(response => setProducts(response.data))
+      .catch(error => console.error("Error fetching products:", error));
   }, []);
 
   return (
-    <div>
-      <h2>Product Image Gallery</h2>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-          gap: "10px",
-        }}
-      >
+    <div className="mt-16 max-w-5xl mx-auto">
+    
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((product) => (
-          <div
-            key={product._id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "10px",
-              textAlign: "center",
-            }}
+          <div 
+            key={product._id} 
+            className="border rounded-lg shadow-lg p-4 text-center cursor-pointer"
+            onClick={() => navigate(`/product/${product._id}`)}
           >
-            <img
-              src={`http://localhost:5000/uploads/${product.imageUrl
-                .split("/")
-                .pop()}`}
-              alt={product.name}
-              onError={(e) => {
-                e.target.onerror = null;
-                
-              }}
-              style={{ width: "100%", height: "auto" }}
-            />
-
-            <p>{product.name}</p>
-            <p>${product.price}</p>
+            <div className="flex justify-center">
+              <img
+                src={`http://localhost:5000/uploads/${product.imageUrl.split("/").pop()}`}
+                alt={product.name}
+                className="w-40 h-40 object-cover mx-auto"
+              />
+            </div>
+            <p className="mt-3 font-semibold">{product.name}</p>
+            <p className="text-gray-600">${product.price}</p>
           </div>
         ))}
       </div>

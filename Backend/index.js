@@ -15,6 +15,21 @@ connectDB();
 // 🔥 Serve images from 'uploads' folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+
+//pruduct detyails fetch
+app.get("/api/products/:id", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    res.json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ message: "Error fetching product", error });
+  }
+});
+
+
 // Fetch All Products (with Image URLs)
 app.get("/api/products", async (req, res) => {
   try {

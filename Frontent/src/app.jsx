@@ -20,6 +20,7 @@ import AdminLogin from "./admin/AdminLogin"; // Import Admin Login Page
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import ProductGallery from "./pages/ProductGallery";
+import ProductDetails from "./pages/ProductDetail";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function MainLayout() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/product" element={<ProductGallery/>}/>
+          <Route path="/product/:id" element={<ProductDetails/>}/>
 
           {/* Admin Panel */}
           <Route path="/admin/login" element={<AdminLogin />} />
