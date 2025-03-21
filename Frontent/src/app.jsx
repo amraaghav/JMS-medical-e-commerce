@@ -1,12 +1,9 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useLocation,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { CartProvider } from "./context/CartContext";
+
 import Navbar from "./conponent/Navbar";
 import Hero from "./conponent/Hero";
 import Profile from "./pages/Profile";
@@ -16,18 +13,22 @@ import AdminPanel from "./admin/AdminPanel";
 import AddItems from "./admin/AddItems";
 import ListItems from "./admin/ListItems";
 import Orders from "./admin/Orders";
-import AdminLogin from "./admin/AdminLogin"; // Import Admin Login Page
+import AdminLogin from "./admin/AdminLogin";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import ProductGallery from "./pages/ProductGallery";
 import ProductDetails from "./pages/ProductDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import CartPage from "./pages/Cart";
+
 function App() {
   return (
-    <BrowserRouter>
-      <MainLayout />
-    </BrowserRouter>
+    <CartProvider>  
+      <BrowserRouter>
+        <MainLayout />
+      </BrowserRouter>
+    </CartProvider>
   );
 }
 
@@ -37,21 +38,21 @@ function MainLayout() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {" "}
-      {/* ✅ Full height container */}
-      {!isAdminRoute && <Navbar />}
+      <ToastContainer position="top-right" autoClose={3000} />
+
+      {!isAdminRoute && <Navbar />} {/* ✅ Navbar updates dynamically */}
+
       <main className="flex-grow">
-        {" "}
-        {/* ✅ Allows the main content to grow */}
         <Routes>
           <Route path="/" element={<Hero />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/product" element={<ProductGallery/>}/>
-          <Route path="/product/:id" element={<ProductDetails/>}/>
+          <Route path="/product" element={<ProductGallery />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} /> 
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/cart" element={<CartPage />} />
 
           {/* Admin Panel */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -65,12 +66,12 @@ function MainLayout() {
           </Route>
         </Routes>
       </main>
-      {!isAdminRoute && <Footer />} {/* ✅ Footer will always be at bottom */}
+
+      {!isAdminRoute && <Footer />}
     </div>
   );
 }
 
-// 🔐 Protected Route for Admin
 const ProtectedAdminRoutes = () => {
   const adminToken = localStorage.getItem("adminToken");
   return adminToken ? <Outlet /> : <Navigate to="/admin/login" />;

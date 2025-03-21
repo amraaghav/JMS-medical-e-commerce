@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -16,12 +17,34 @@ const ProductDetails = () => {
       );
   }, [id]);
 
+  const addToCart = () => {
+    if (!product) return;
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingItem = cart.find((item) => item.id === product.id);
+    
+    if (existingItem) {
+      existingItem.quantity += parseInt(quantity);
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.imageUrl,
+        quantity: parseInt(quantity),
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    toast.success("Added to cart successfully!");
+  };
+
   if (!product) {
     return <p className="text-center mt-10">Loading product details...</p>;
   }
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 p-6   flex gap-6">
+    <div className="max-w-5xl mx-auto mt-10 p-6 flex gap-6">
       {/* Left Side - Product Image */}
       <div className="w-1/2 flex justify-center items-center">
         <img
@@ -35,7 +58,6 @@ const ProductDetails = () => {
       <div className="w-1/2 p-4">
         <h2 className="text-2xl font-bold">{product.name}</h2>
 
-        {/* Brand, Category, Stock */}
         <p className="text-gray-700 mt-2">
           <span className="font-semibold">Brand:</span> {product.brand}
         </p>
@@ -65,7 +87,7 @@ const ProductDetails = () => {
           <p className="text-2xl font-semibold">₹{product.price}</p>
           <p className="text-sm text-gray-500">Inclusive of all taxes</p>
 
-          {/* Quantity Dropdown */}
+          {/* Quantity Selector */}
           <div className="mt-4 flex items-center">
             <select
               value={quantity}
@@ -80,9 +102,14 @@ const ProductDetails = () => {
           </div>
 
           {/* Add to Cart Button */}
-          <button className="bg-red-500 text-white w-full py-2 mt-4 rounded-md text-lg font-bold hover:bg-red-600">
+          <button
+            onClick={addToCart}
+            className="bg-red-500 text-white w-full py-2 mt-4 rounded-md text-lg font-bold hover:bg-red-600"
+          >
             Add to Cart
           </button>
+
+         
         </div>
       </div>
     </div>

@@ -10,14 +10,14 @@ const SearchBar = ({ onSearch }) => {
   };
 
   return (
-    <div className="flex justify-center mt-2 mb-2">
-      <div className="relative">
+    <div className="flex justify-center mt-2 mb-2 px-4">
+      <div className="relative w-full max-w-xl">
         <input
           type="text"
           placeholder="Search for medicines..."
           value={query}
           onChange={handleSearch}
-          className="p-2 pl-10 bg-gray-100  rounded-md w-[600px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2 pl-10 bg-gray-100 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <Search className="absolute right-3 top-2.5 text-gray-500" size={20} />
       </div>
