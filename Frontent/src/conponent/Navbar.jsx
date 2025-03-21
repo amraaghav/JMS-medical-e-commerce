@@ -25,8 +25,8 @@ const Navbar = ({ setHideHero }) => {
 
   return (
     <>
-      <header className="bg-white shadow relative z-50">
-        <div className="container mx-auto flex justify-between items-center py-4 px-6">
+      <header className="relative z-50 bg-white shadow">
+        <div className="container flex items-center justify-between px-6 py-4 mx-auto">
           <div className="flex items-center">
             <Link to="/" className="text-2xl font-bold">
               JMS <span className="text-sm">Medical</span>
@@ -34,7 +34,7 @@ const Navbar = ({ setHideHero }) => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden text-gray-700 text-2xl z-50" onClick={toggleMenu}>
+          <button className="z-50 text-2xl text-gray-700 md:hidden" onClick={toggleMenu}>
             {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
 
@@ -44,14 +44,14 @@ const Navbar = ({ setHideHero }) => {
               menuOpen ? "translate-y-0" : "-translate-y-full md:translate-y-0"
             }`}
           >
-            <Link to="/" className="block md:inline text-gray-700 py-2">HOME</Link>
-            <Link to="/product" className="block md:inline text-gray-700 py-2">MEDICINES</Link>
-            <Link className="block md:inline text-gray-700 py-2" to='/about'>ABOUT</Link>
-            <Link to='/contact' className="block md:inline text-gray-700 py-2" >CONTACT</Link>
+            <Link to="/" className="block py-2 text-gray-700 md:inline">HOME</Link>
+            <Link to="/product" className="block py-2 text-gray-700 md:inline">MEDICINES</Link>
+            <Link className="block py-2 text-gray-700 md:inline" to='/about'>ABOUT</Link>
+            <Link to='/contact' className="block py-2 text-gray-700 md:inline" >CONTACT</Link>
           </nav>
 
           {/* User Actions */}
-          <div className="hidden md:flex items-center space-x-4 relative">
+          <div className="relative items-center hidden space-x-4 md:flex">
            
             <Link to="/signup" className="text-gray-700">Sign up</Link>
             <a className="text-gray-700" href="#"><FaShoppingCart /></a>
@@ -69,10 +69,10 @@ const Navbar = ({ setHideHero }) => {
               {dropdownOpen && (
                 <div
                   ref={dropdownRef}
-                  className="absolute top-8 right-0 bg-white shadow-lg border rounded-md w-40 z-20 "
+                  className="absolute right-0 z-20 w-40 bg-white border rounded-md shadow-lg top-8 "
                 >
                   <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={handleLinkClick}>Profile</Link>
-                  <Link to="/signin" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={handleLinkClick}>Sign In</Link>
+                  <Link to="/Login" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={handleLinkClick}>Sign In</Link>
                   <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-200" onClick={handleLinkClick}>Logout</a>
                 </div>
               )}

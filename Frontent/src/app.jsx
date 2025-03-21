@@ -21,7 +21,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import ProductGallery from "./pages/ProductGallery";
 import ProductDetails from "./pages/ProductDetail";
-
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 function App() {
   return (
     <BrowserRouter>
@@ -49,6 +50,8 @@ function MainLayout() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/product" element={<ProductGallery/>}/>
           <Route path="/product/:id" element={<ProductDetails/>}/>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} /> 
 
           {/* Admin Panel */}
           <Route path="/admin/login" element={<AdminLogin />} />
