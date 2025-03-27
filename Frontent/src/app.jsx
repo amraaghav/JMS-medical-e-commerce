@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { CartProvider } from "./context/CartContext";
+// import { CartProvider } from "./context/CartContext";
 
 import Navbar from "./conponent/Navbar";
 import Hero from "./conponent/Hero";
@@ -20,15 +20,19 @@ import ProductGallery from "./pages/ProductGallery";
 import ProductDetails from "./pages/ProductDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import CartPage from "./pages/Cart";
+import Cart from "./pages/Cart";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import Order from "./pages/Order";
+
 
 function App() {
   return (
-    <CartProvider>  
+    <Provider store={store}>
       <BrowserRouter>
         <MainLayout />
       </BrowserRouter>
-    </CartProvider>
+    </Provider>
   );
 }
 
@@ -52,7 +56,8 @@ function MainLayout() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/cart" element={<CartPage />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/order" element={<Order/>} />
 
           {/* Admin Panel */}
           <Route path="/admin/login" element={<AdminLogin />} />

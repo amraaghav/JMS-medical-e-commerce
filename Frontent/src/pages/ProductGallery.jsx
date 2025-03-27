@@ -13,7 +13,7 @@ const ProductGallery = () => {
   }, []);
 
   return (
-    <div className="mt-16 max-w-5xl mx-auto">
+    <div className="mt-16 max-w-5xl mx-auto mb-12">
     
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((product) => (

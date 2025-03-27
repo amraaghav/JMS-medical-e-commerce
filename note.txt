@@ -1,4 +1,9 @@
 mongodb://localhost:27017
 npm install lucide-react
+npm install uuid
 
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7198.7941197271!2d84.66104415586503!3d25.558453545152595!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398d5f58a0d42be1%3A0xb802c68a32c1aa04!2sArrah%2C%20Bihar!5e0!3m2!1sen!2sin!4v1742232567146!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+
+ localStorage.setItem("cart", JSON.stringify(cart));
+    toast.success("Added to cart successfully!");

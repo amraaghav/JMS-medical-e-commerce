@@ -15,7 +15,7 @@ const  Login=() => {
             <label className="block text-sm text-gray-600">Email</label>
             <input
               type="email"
-              placeholder="jmsmedical@gmail.com"
+              placeholder="email@gmail.com"
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300"
             />
           </div>

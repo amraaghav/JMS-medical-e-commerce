@@ -20,7 +20,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 text-center">
+    <div className="max-w-5xl mx-auto mt-10 text-center mb-11">
       <h1 className="text-3xl">
         JMS Medical : <span className=" text-sm">Leading Online Pharmacy & Healthcare Platform</span>
       </h1>

@@ -10,11 +10,20 @@ export default function Register() {
         <h2 className="mb-4 text-2xl font-semibold text-center">Create an account</h2>
         <form className="space-y-4">
           {/* Email Input */}
+
+          <div>
+            <label className="block text-sm text-gray-600">Username</label>
+            <input
+              type="text"
+              placeholder="username"
+              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300"
+            />
+          </div>
           <div>
             <label className="block text-sm text-gray-600">Email</label>
             <input
               type="email"
-              placeholder="jmsmedical@gmail.com"
+              placeholder="email@gmail.com"
               className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300"
             />
           </div>
