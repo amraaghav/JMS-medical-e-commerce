@@ -23,7 +23,8 @@ import Signup from "./pages/Signup";
 import Cart from "./pages/Cart";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import Order from "./pages/Order";
+import OrderPage from "./pages/Order";
+import OrderDetails from "./pages/OrderDetails";
 
 
 function App() {
@@ -57,7 +58,9 @@ function MainLayout() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/order" element={<Order/>} />
+          <Route path="/orderpage" element={<OrderPage/>} />
+          <Route path="/order-details" element={<OrderDetails />} />
+         
 
           {/* Admin Panel */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -66,7 +69,7 @@ function MainLayout() {
               <Route index element={<AdminPanel />} />
               <Route path="add-items" element={<AddItems />} />
               <Route path="list-items" element={<ListItems />} />
-              <Route path="orders" element={<Orders />} />
+              {/* <Route path="order" element={<Order/>} /> */}
             </Route>
           </Route>
         </Routes>

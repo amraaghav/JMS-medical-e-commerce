@@ -36,7 +36,7 @@ const ProductPage = () => {
         className="w-full h-64 object-cover rounded-md mb-4"
       />
       <p className="text-gray-700 mb-2">{product.description}</p>
-      <p className="text-lg font-semibold mb-4">Price: ${product.price}</p>
+      <p className="text-lg font-semibold mb-4">Price:₹{product.price}</p>
       <button
         onClick={handleAddToCart}
         className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md w-full"

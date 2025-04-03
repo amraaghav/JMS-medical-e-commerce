@@ -1,58 +1,67 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";  // ✅ Import useNavigate
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AdminLogin = ({ setAdmin }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const navigate = useNavigate();  // ✅ Initialize navigation
+const AdminLogin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        console.log("🔹 Sending Login Request:", { email, password });
+  const handleLogin = (e) => {
+    e.preventDefault();
+    
+    // Dummy Admin Credentials (Replace with API Call)
+    const adminEmail = "admin@gmail.com";
+    const adminPassword = "admin123";
 
-        try {
-            const { data } = await axios.post("http://localhost:5000/api/admin/login", { email, password });
+    if (email === adminEmail && password === adminPassword) {
+      localStorage.setItem("adminToken", "loggedin"); // Store authentication state
+      navigate("/admin"); // Redirect to Admin Dashboard
+    } else {
+      setError("Invalid email or password!");
+    }
+  };
 
-            console.log("✅ Login Success:", data);
-            localStorage.setItem("adminToken", data.token);
-            if (setAdmin) setAdmin(data.admin);
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-6 rounded-lg shadow-md w-96">
+        <h2 className="text-2xl font-semibold text-center mb-4">Admin Login</h2>
+        
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        
+        <form onSubmit={handleLogin}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium">Email</label>
+            <input
+              type="email"
+              className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-            navigate("/admin");  // ✅ Redirect to Admin Dashboard
-        } catch (err) {
-            console.error("❌ Login Error:", err.response?.data || err.message);
-            setError(err.response?.data?.message || "Invalid Credentials");
-        }
-    };
+          <div className="mb-4">
+            <label className="block text-sm font-medium">Password</label>
+            <input
+              type="password"
+              className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                <h2 className="text-2xl font-bold mb-4 text-center">Admin Login</h2>
-                <form onSubmit={handleLogin} className="flex flex-col space-y-4">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="p-2 border rounded w-full"
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="p-2 border rounded w-full"
-                    />
-                    <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-                        Login
-                    </button>
-                </form>
-                {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-            </div>
-        </div>
-    );
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default AdminLogin;

@@ -1,10 +1,42 @@
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart, clearCart } from "../redux/cartSlice";
 import { MdDelete } from "react-icons/md";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  // Calculate total amount
+  const totalAmount = selectedItems.reduce((total, id) => {
+    const item = cartItems.find((item) => item.id === id);
+    return item ? total + item.price * item.quantity : total;
+  }, 0);
+
+  // Handle single checkbox change
+  const handleCheckboxChange = (id) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((itemId) => itemId !== id)
+        : [...prevSelected, id]
+    );
+  };
+  const navigate = useNavigate();
+  const handleOrderNow = () => {
+    navigate("/order-details", { state: { selectedItems } });
+  };
+
+  // Handle select all / unselect all
+  const handleSelectAll = () => {
+    if (selectedItems.length === cartItems.length) {
+      setSelectedItems([]); // Uncheck all
+    } else {
+      setSelectedItems(cartItems.map((item) => item.id)); // Select all
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6">
@@ -14,10 +46,27 @@ const Cart = () => {
         <p className="mt-4 text-gray-600">Your cart is empty.</p>
       ) : (
         <>
+          {/* Select All Checkbox */}
+          {/* <div className="flex items-center mb-4">
+            <input
+              type="checkbox"
+              checked={selectedItems.length === cartItems.length && cartItems.length > 0}
+              onChange={handleSelectAll}
+              className="mr-2 w-5 h-5"
+            />
+            <span className="text-lg font-semibold">Select All</span>
+          </div> */}
+
           <div className="mt-6">
             {cartItems.map((item) => (
-              <div key={item.id} className="flex justify-between border-b p-4">
+              <div key={item.id} className="flex justify-between border-b p-4 items-center">
                 <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedItems.includes(item.id)}
+                    onChange={() => handleCheckboxChange(item.id)}
+                    className="mr-3 w-5 h-5"
+                  />
                   <img
                     src={`http://localhost:5000/uploads/${item.image.split("/").pop()}`}
                     alt={item.name}
@@ -33,18 +82,28 @@ const Cart = () => {
                   onClick={() => dispatch(removeFromCart(item.id))}
                   className="text-red-300 active:text-red-500 hover:text-red-500"
                 >
-             <MdDelete className="w-36 text-3xl "/>
+                  <MdDelete className="w-6 text-3xl" />
                 </button>
               </div>
             ))}
           </div>
 
+          <div className="mt-6 text-lg font-semibold flex justify-between">
+            <span>Total Amount (Selected Items):</span>
+            <span>₹{totalAmount.toFixed(2)}</span>
+          </div>
+            
           <button
-            onClick={() => dispatch(clearCart())}
-            className="bg-red-500 text-white w-full py-2 mt-6 rounded-md text-lg font-bold hover:bg-red-600"
-          >
-            Clear Cart
-          </button>
+  onClick={handleOrderNow}
+  disabled={selectedItems.length === 0}
+  className={`w-full py-2 mt-4 rounded-md text-lg font-bold ${
+    selectedItems.length > 0
+      ? "bg-green-500 text-white hover:bg-green-600"
+      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+  }`}
+>
+  Order Now
+</button>
         </>
       )}
     </div>

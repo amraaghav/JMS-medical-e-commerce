@@ -45,7 +45,7 @@ const ProductDetails = () => {
         <img
           src={`http://localhost:5000/uploads/${product.imageUrl.split("/").pop()}`}
           alt={product.name}
-          className="w-80 h-80 object-cover rounded-md"
+          className="w-fixed h-80 object-cover rounded-md"
         />
       </div>
 

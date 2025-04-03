@@ -26,11 +26,11 @@ const ProductGallery = () => {
               <img
                 src={`http://localhost:5000/uploads/${product.imageUrl.split("/").pop()}`}
                 alt={product.name}
-                className="w-40 h-40 object-cover mx-auto"
+                className="w-30 h-40 object-cover mx-auto"
               />
             </div>
             <p className="mt-3 font-semibold">{product.name}</p>
-            <p className="text-gray-600">${product.price}</p>
+            <p className="text-gray-600">₹{product.price}</p>
           </div>
         ))}
       </div>

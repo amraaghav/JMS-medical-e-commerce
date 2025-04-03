@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { FiUsers, FiBox, FiShoppingCart, FiUser, FiLogOut, FiPlus, FiList } from "react-icons/fi";
+
 
 const AdminLayout = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const navigate=useNavigate()
+
   const handleLogout = () => {
- 
-    
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.removeItem("adminToken"); // Remove authentication
+      navigate("/admin/login"); // Redirect to login page
+    }
   };
 
   return (
