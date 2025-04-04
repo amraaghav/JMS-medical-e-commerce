@@ -53,7 +53,7 @@ const Navbar = ({ setHideHero }) => {
 
         {/* Right Section */}
         <div className="relative  items-center hidden space-x-4 md:flex">
-          <Link to="/login" className="text-gray-700">Sign In</Link>
+          {/* <Link to="/login" className="text-gray-700">Sign In</Link> */}
 
           {/* Cart */}
           <Link to="/cart" className="relative text-gray-700 text-lg">
@@ -64,6 +64,10 @@ const Navbar = ({ setHideHero }) => {
               </span>
             )}
           </Link>
+            {/* need help */}
+
+          <Link to="/help" className="text-gray-700">Need Help?</Link>
+
 
           {/* User Dropdown */}
           <div className="relative">
@@ -75,7 +79,7 @@ const Navbar = ({ setHideHero }) => {
               <div ref={dropdownRef} className="absolute right-0 z-20 w-40 bg-white border rounded-md shadow-lg top-8">
                 <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</Link>
                 <Link to="/" className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Order</Link>
-                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+                <Link to='/logout'  className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</Link>
               </div>
             )}
           </div>

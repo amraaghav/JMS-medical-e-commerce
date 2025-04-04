@@ -12,7 +12,7 @@ const Home = () => {
     { name: "Derma Care", src: "/images/Derma Care.jpg" },
     { name: "Heart Care", src: "/images/Heart Care.jpg" },
     { name: "Protein Power", src: "/images/Protein Power.jpg" },
-    { name: "Medical Devices", src: "/images/Honey.jpg" },
+    { name: "Honey", src: "/images/Honey.jpg" },
     { name: "Patanjali chayawanprash", src: "/images/Patanjali chayawanprash.jpg" },
     { name: "Prostate Veg Capsule", src: "/images/Prostate Veg Capsule.jpg" },
     { name: "Zandu honey", src: "/images/Zandu honey.jpg" },
@@ -24,10 +24,10 @@ const Home = () => {
       <h1 className="text-3xl">
         JMS Medical : <span className=" text-sm">Leading Online Pharmacy & Healthcare Platform</span>
       </h1>
- 
+ <h3 className="flex text-end ml-8 font-bold">Shop by health corcerns</h3>
       {/* Category Grid */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-10 mt-6 p-5  ">
-  {categories.map((category, index) => (
+  {categories.map((category, index) => ( 
     <div
       key={index}
       className="cursor-pointer transition-transform transform hover:scale-105 flex flex-col items-center"

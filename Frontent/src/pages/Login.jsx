@@ -1,59 +1,70 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
-const  Login=() => {
-  const [passwordVisible, setPasswordVisible] = useState(false);
+const SignIn = ({ setAuth }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post("http://localhost:5000/api/auth/signin", {
+        email,
+        password,
+      });
+      localStorage.setItem("userToken", data.token); // ✅ Updated key to 'userToken' for consistency
+      setAuth(true);
+      navigate("/");
+    } catch (err) {
+      alert("Invalid credentials");
+    }
+  };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <div className="relative p-8 bg-white shadow-lg rounded-xl w-96">
-        
-        {/* Form */}
-        <h2 className="mb-4 text-2xl font-semibold text-center">Login to your account</h2>
-        <form className="space-y-4">
-          {/* Email Input */}
-          <div>
-            <label className="block text-sm text-gray-600">Email</label>
-            <input
-              type="email"
-              placeholder="email@gmail.com"
-              className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300"
-            />
-          </div>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 to-purple-200">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md"
+      >
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Sign In</h2>
 
-          {/* Password Input */}
-          <div>
-            <label className="block text-sm text-gray-600">Password</label>
-            <div className="relative">
-              <input
-                type={passwordVisible ? "text" : "password"}
-                className="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 flex items-center right-3"
-                onClick={() => setPasswordVisible(!passwordVisible)}
-              >
-                {passwordVisible ? "👁️" : "👁️‍🗨️"}
-              </button>
-            </div>
-          </div>
+        <input
+          className="border p-2 mb-4 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full py-2 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+        <input
+          className="border p-2 mb-6 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white py-2 w-full rounded-md font-semibold transition"
+          type="submit"
+        >
+          Login
+        </button>
+
+        <p className="text-sm mt-4 text-center">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-blue-500 underline hover:text-blue-700 transition"
           >
-            Login Now
-          </button>
-        </form>
-
-        {/* Login Link */}
-        <p className="mt-4 text-sm text-center text-gray-600">
-          Dont't Have an account? <a href="/Signup" className="font-semibold text-blue-500">Signup</a>
+            Sign Up
+          </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
-}
+};
 
-export default Login;
+export default SignIn;

@@ -21,8 +21,16 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleAddToCart = () => {
+    const userToken = localStorage.getItem("userToken");
+  
+    if (!userToken) {
+      toast.error("Please sign in to add items to cart!");
+      // window.location.href = "/login"; // Navigate to login page
+      return;
+    }
+  
     if (!product) return;
-    
+  
     dispatch(
       addToCart({
         id: product._id,
@@ -34,10 +42,13 @@ const ProductDetails = () => {
     );
     toast.success("Added to cart successfully!");
   };
+  
 
   if (!product) {
     return <p className="text-center mt-10">Loading product details...</p>;
   }
+
+
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6 flex gap-6">
