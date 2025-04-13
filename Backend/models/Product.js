@@ -7,7 +7,7 @@ const ProductSchema = new mongoose.Schema({
   category: String,
   description: String,
   stock: Number,
-  image: String, // Store image file path
+  imageUrl: String, // Store image file path
 });
 
 module.exports = mongoose.model("Product", ProductSchema);

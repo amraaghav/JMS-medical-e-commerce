@@ -1,120 +1,54 @@
-import React, { useState, useEffect } from "react";
-import { FiUpload } from "react-icons/fi";
+import React, { useState } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AddItem = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
-
-  const [images, setImages] = useState([]);
   const [product, setProduct] = useState({
     name: "",
     description: "",
     category: "",
+    branch: "",
     price: "",
+    stock: "",
   });
+  const [image, setImage] = useState(null);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (id) {
-      axios.get(`http://localhost:5000/api/items/${id}`)
-        .then((res) => {
-          setProduct(res.data);
-          setImages(res.data.images || []);
-        })
-        .catch((err) => console.error("Error fetching item:", err));
-    }
-  }, [id]);
-
-  const handleImageChange = (index, event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const newImages = [...images];
-      newImages[index] = file;
-      setImages(newImages);
-    }
-  };
-
-  const handleChange = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setProduct({ ...product, [e.target.name]: e.target.value });
+  const handleImageChange = (e) => setImage(e.target.files[0]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     const formData = new FormData();
-    formData.append("name", product.name);
-    formData.append("description", product.description);
-    formData.append("category", product.category);
-    formData.append("price", product.price);
-    images.forEach((image) => formData.append("images", image));
+    Object.keys(product).forEach((key) => formData.append(key, product[key]));
+    if (image) formData.append("image", image);
 
     try {
-      if (id) {
-        await axios.put(`http://localhost:5000/api/items/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      } else {
-        await axios.post("http://localhost:5000/api/items", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      }
-      navigate("/list-items");
+      await axios.post("http://localhost:5000/api/add-product", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("✅ Product added successfully!");
+      navigate("/admin/list-items");
     } catch (error) {
-      console.error("Error saving item:", error);
+      console.error("Error adding product:", error);
+      setError("❌ Failed to add product. Please try again.");
     }
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">{id ? "Update Item" : "Add New Item"}</h2>
-
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">Upload Image</h3>
-        <div className="flex space-x-2">
-          {[...Array(4)].map((_, index) => (
-            <label key={index} className="relative cursor-pointer">
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageChange(index, e)} />
-              <div className="w-20 h-20 flex items-center justify-center bg-gray-100 border border-gray-300 rounded-md">
-                {images[index] ? (
-                  <img src={URL.createObjectURL(images[index])} alt="Preview" className="w-full h-full object-cover rounded-md" />
-                ) : (
-                  <div className="flex flex-col items-center">
-                    <FiUpload className="text-gray-500 text-2xl" />
-                    <span className="text-sm">Upload</span>
-                  </div>
-                )}
-              </div>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-        <div className="mb-4">
-          <label className="block text-gray-700">Product Name</label>
-          <input type="text" name="name" value={product.name} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md" required />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700">Product Description</label>
-          <textarea name="description" value={product.description} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md" required />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-gray-700">Product Category</label>
-            <input type="text" name="category" value={product.category} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md" required />
-          </div>
-          <div>
-            <label className="block text-gray-700">Product Price</label>
-            <input type="number" name="price" value={product.price} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md" required />
-          </div>
-        </div>
-
-        <button type="submit" className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md">
-          {id ? "Update" : "Add"}
-        </button>
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-6">
+      <h2 className="text-3xl font-bold mb-6 text-center">Add New Product</h2>
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <input type="text" name="name" value={product.name} onChange={handleChange} placeholder="Product Name" required className="w-full border p-2 mb-4 rounded" />
+        <textarea name="description" value={product.description} onChange={handleChange} placeholder="Description" required className="w-full border p-2 mb-4 rounded" />
+        <input type="text" name="category" value={product.category} onChange={handleChange} placeholder="Category" required className="w-full border p-2 mb-4 rounded" />
+        <input type="text" name="branch" value={product.branch} onChange={handleChange} placeholder="Branch" required className="w-full border p-2 mb-4 rounded" />
+        <input type="number" name="price" value={product.price} onChange={handleChange} placeholder="Price" required className="w-full border p-2 mb-4 rounded" />
+        <input type="number" name="stock" value={product.stock} onChange={handleChange} placeholder="Stock" required className="w-full border p-2 mb-4 rounded" />
+        <input type="file" accept="image/*" onChange={handleImageChange} className="w-full mb-4" />
+        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">➕ Add Product</button>
       </form>
     </div>
   );

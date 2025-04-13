@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-
 import Navbar from "./conponent/Navbar";
 import Hero from "./conponent/Hero";
 import Profile from "./pages/Profile";
@@ -26,18 +25,28 @@ import OrderDetails from "./pages/OrderDetails";
 import MedicalHelp from "./pages/Help";
 import ProtectedRoute from "./routes/ProtectedRoute"; // Import the protected route
 import Logout from "./pages/Logout";
+import AddressForm from "./pages/AddressForm"; 
+
 
 function App() {
+  const [auth, setAuth] = useState(!!localStorage.getItem("userToken"));
+
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    setAuth(!!token);
+  }, []);
+
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <MainLayout />
+        <MainLayout auth={auth} setAuth={setAuth} />
       </BrowserRouter>
     </Provider>
   );
 }
 
-function MainLayout() {
+
+function MainLayout({ auth, setAuth })  {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
@@ -54,9 +63,10 @@ function MainLayout() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/product" element={<ProductGallery />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setAuth={setAuth} />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/help" element={<MedicalHelp />} />
+          <Route path="/address" element={<AddressForm />} />
 
           {/* 🔒 Protected User Routes */}
           <Route element={<ProtectedRoute />}>
@@ -65,6 +75,7 @@ function MainLayout() {
             <Route path="/orderpage" element={<OrderPage />} />
             <Route path="/order-details" element={<OrderDetails />} />
             <Route path="/logout" element={<Logout />} />
+           
           </Route>
 
           {/* 🔒 Admin Panel Routes */}

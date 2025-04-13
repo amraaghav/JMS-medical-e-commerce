@@ -1,17 +1,26 @@
+// middleware/verifyToken.js
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-const authMiddleware = (req, res, next) => {
-  const token = req.header("Authorization");
+const verifyToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-  if (!token) return res.status(403).json({ message: "Access denied. No token provided." });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
+  }
 
   try {
-    const decoded = jwt.verify(token, "SECRET_KEY"); // Replace with your actual secret
-    req.user = decoded;
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    req.user = user;
     next();
-  } catch (error) {
-    res.status(400).json({ message: "Invalid token" });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
 
-module.exports = authMiddleware;
+module.exports = verifyToken;

@@ -7,3 +7,9 @@ npm install uuid
 
  localStorage.setItem("cart", JSON.stringify(cart));
     toast.success("Added to cart successfully!");
+
+
+    npm install razorpay
+
+
+ key: "rzp_test_xfdz8hdehyaXJT"

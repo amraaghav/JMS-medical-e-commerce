@@ -46,16 +46,7 @@ const Cart = () => {
         <p className="mt-4 text-gray-600">Your cart is empty.</p>
       ) : (
         <>
-          {/* Select All Checkbox */}
-          {/* <div className="flex items-center mb-4">
-            <input
-              type="checkbox"
-              checked={selectedItems.length === cartItems.length && cartItems.length > 0}
-              onChange={handleSelectAll}
-              className="mr-2 w-5 h-5"
-            />
-            <span className="text-lg font-semibold">Select All</span>
-          </div> */}
+         
 
           <div className="mt-6">
             {cartItems.map((item) => (

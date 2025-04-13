@@ -1,22 +1,31 @@
 import { useState, useRef, useEffect } from "react";
 import { FaUser, FaBars, FaTimes, FaShoppingCart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const Navbar = ({ setHideHero }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const cartItems = useSelector((state) => state.cart.cartItems);
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
-    setHideHero(!menuOpen);
+    setHideHero && setHideHero(!menuOpen);
   };
 
-  // Close dropdown if clicked outside
+  const handleUserClick = () => {
+    const token = localStorage.getItem("userToken");
+    if (token) {
+      setDropdownOpen(!dropdownOpen);
+    } else {
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -34,12 +43,10 @@ const Navbar = ({ setHideHero }) => {
           JMS <span className="text-sm">Medical</span>
         </Link>
 
-        {/* Mobile Menu Button */}
         <button className="z-50 text-2xl text-gray-700 md:hidden" onClick={toggleMenu}>
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* Navigation */}
         <nav
           className={`absolute md:static top-16 left-0 w-full md:w-auto bg-white md:flex md:space-x-6 p-4 md:p-0 shadow-md md:shadow-none transition-all duration-300 ${
             menuOpen ? "block" : "hidden md:block"
@@ -51,11 +58,7 @@ const Navbar = ({ setHideHero }) => {
           <Link to="/contact" className="block py-2 text-gray-700 md:inline">CONTACT</Link>
         </nav>
 
-        {/* Right Section */}
-        <div className="relative  items-center hidden space-x-4 md:flex">
-          {/* <Link to="/login" className="text-gray-700">Sign In</Link> */}
-
-          {/* Cart */}
+        <div className="relative items-center hidden space-x-4 md:flex">
           <Link to="/cart" className="relative text-gray-700 text-lg">
             <FaShoppingCart />
             {cartCount > 0 && (
@@ -64,22 +67,20 @@ const Navbar = ({ setHideHero }) => {
               </span>
             )}
           </Link>
-            {/* need help */}
 
           <Link to="/help" className="text-gray-700">Need Help?</Link>
 
-
-          {/* User Dropdown */}
+          {/* 👇 User Icon */}
           <div className="relative">
-            <button className="text-gray-700" onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <button className="text-gray-700" onClick={handleUserClick}>
               <FaUser />
             </button>
 
             {dropdownOpen && (
               <div ref={dropdownRef} className="absolute right-0 z-20 w-40 bg-white border rounded-md shadow-lg top-8">
                 <Link to="/profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</Link>
-                <Link to="/" className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Order</Link>
-                <Link to='/logout'  className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</Link>
+                <Link to="/orderpage" className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Order</Link>
+                <Link to="/logout" className="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</Link>
               </div>
             )}
           </div>

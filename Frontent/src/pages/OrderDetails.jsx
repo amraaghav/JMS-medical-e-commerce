@@ -1,100 +1,195 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 
 const OrderDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const selectedItems = location.state?.selectedItems || [];
+  const { selectedItems } = location.state || {};
+  const products = useSelector((state) => state.cart.cartItems);
+  const [orders, setOrders] = useState([]);
+  const [userAddress, setUserAddress] = useState(null);
 
-  const [userDetails, setUserDetails] = useState({
-    name: "",
-    address: "",
-    phone: "",
-    paymentMethod: "COD",
-  });
-
-  const handleChange = (e) => {
-    setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
-  };
-
-  const handlePlaceOrder = () => {
-    if (!userDetails.name || !userDetails.address || !userDetails.phone) {
-      alert("Please fill in all the details!");
-      return;
+  useEffect(() => {
+    const savedItems = selectedItems || JSON.parse(localStorage.getItem("selectedItems"));
+    if (savedItems) {
+      localStorage.setItem("selectedItems", JSON.stringify(savedItems));
+      const selectedProducts = savedItems.map((id) =>
+        products.find((product) => product.id === id)
+      );
+      setOrders(selectedProducts);
     }
 
-    const newOrder = {
-      id: Date.now(),
-      items: selectedItems,
-      user: userDetails,
-      total: selectedItems.reduce((total, item) => total + item.price * item.quantity, 0),
-      status: "Pending",
-    };
+    const storedAddress = localStorage.getItem("address");
+    if (storedAddress) {
+      setUserAddress(JSON.parse(storedAddress));
+    }
+  }, [selectedItems, products]);
 
-    // Get existing orders from localStorage
-    const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+  const handleAddAddress = () => {
+    navigate("/address");
+  };
 
-    // Save updated orders
-    localStorage.setItem("orders", JSON.stringify([...existingOrders, newOrder]));
+  const handlePayment = async () => {
+    const totalAmount = orders.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-    console.log("Order Saved:", newOrder); // Debugging Log
+    try {
+      const res = await fetch("http://localhost:5000/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: totalAmount }),
+      });
 
-    // Navigate to Orders Page
-    navigate("/orderpage");
+      const data = await res.json();
+
+      const options = {
+        key: "rzp_test_xfdz8hdehyaXJT", // Replace with your actual Razorpay key
+        amount: data.amount,
+        currency: data.currency,
+        name: "Your Medical Store",
+        description: "Order Payment",
+        order_id: data.id,
+        handler: async function (response) {
+          alert("✅ Payment Successful!");
+        
+          const newOrder = {
+            id: response.razorpay_payment_id,
+            status: "Paid",
+            total: totalAmount,
+            user: {
+              name: userAddress?.fullName,
+              address: `${userAddress?.locality}, ${userAddress?.address}, ${userAddress?.city}, ${userAddress?.state} - ${userAddress?.pincode}`,
+              phone: userAddress?.mobile,
+              paymentMethod: "Razorpay",
+            },
+            items: orders.map((item) => ({
+              id: item.id,
+              name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+              image: `http://localhost:5000/uploads/${item.image.split("/").pop()}`,
+            })),
+          };
+        
+          // ⬇️ Save to MongoDB (your backend)
+          try {
+            await fetch("http://localhost:5000/api/orders", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newOrder),
+            });
+          } catch (error) {
+            console.error("Error saving order to MongoDB:", error);
+          }
+        
+          // ⬇️ Optional: Also save to localStorage
+          const previousOrders = JSON.parse(localStorage.getItem("orders")) || [];
+          localStorage.setItem("orders", JSON.stringify([newOrder, ...previousOrders]));
+        
+          navigate("/orderpage");
+        }
+        ,
+        prefill: {
+          name: userAddress?.fullName,
+          contact: userAddress?.mobile,
+        },
+        theme: {
+          color: "#22c55e",
+        },
+      };
+
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error("Payment initiation failed:", error);
+    }
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-6">
-      <h2 className="text-2xl font-bold">Order Details</h2>
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded shadow">
+      <h2 className="text-2xl font-bold mb-6 border-b pb-2">🛒 Your Orders</h2>
 
-      <form className="mt-6 space-y-4">
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={userDetails.name}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-          required
-        />
-        <input
-          type="text"
-          name="address"
-          placeholder="Shipping Address"
-          value={userDetails.address}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-          required
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone Number"
-          value={userDetails.phone}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-          required
-        />
+      {orders.length === 0 ? (
+        <p className="text-gray-600">No orders placed yet.</p>
+      ) : (
+        orders.map((order, index) => (
+          <div key={index} className="border rounded-lg p-6 mb-8 shadow-md">
+            <div className="flex items-start justify-between">
+              <div className="flex">
+                <img
+                  src={`http://localhost:5000/uploads/${order.image.split("/").pop()}`}
+                  alt={order.name}
+                  className="w-28 h-28 object-cover rounded"
+                />
+                <div className="ml-4">
+                  <p className="text-lg font-semibold">{order.name}</p>
+                  <p className="text-sm text-gray-600">Qty: {order.quantity}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-semibold text-lg">₹{order.price}</p>
+              </div>
+            </div>
 
-        <label className="block font-semibold">Payment Method:</label>
-        <select
-          name="paymentMethod"
-          value={userDetails.paymentMethod}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-md"
-        >
-          <option value="COD">Cash on Delivery</option>
-          <option value="Online">Online Payment</option>
-        </select>
+            <div className="mt-6 border-t pt-4">
+              <h3 className="font-semibold text-lg mb-2">Bill Summary</h3>
+              <div className="flex justify-between text-sm text-gray-700">
+                <span>Item total (MRP)</span>
+                <span>₹{order.price * order.quantity}</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-700">
+                <span>Platform fee</span>
+                <span className="text-green-600">Free</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-700">
+                <span>Total discount</span>
+                <span className="text-green-600">- ₹0</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-700">
+                <span>Shipping fee</span>
+                <span className="text-green-600">Free</span>
+              </div>
+              <hr className="my-2" />
+              <div className="flex justify-between font-bold text-lg">
+                <span>To be paid</span>
+                <span>₹{order.price * order.quantity}</span>
+              </div>
+            </div>
 
-        <button
-          type="button"
-          onClick={handlePlaceOrder}
-          className="w-full py-2 mt-4 bg-green-500 text-white font-bold rounded-md hover:bg-green-600"
-        >
-          Place Order
-        </button>
-      </form>
+            <div className="mt-6 flex items-center justify-between">
+              <div className="text-sm">
+                <span className="text-gray-700 font-medium">Delivering to</span>
+                {userAddress ? (
+                  <div className="mt-1 text-gray-800 leading-6">
+                    <p>{userAddress.fullName} - {userAddress.mobile}</p>
+                    <p>{userAddress.locality}, {userAddress.address}</p>
+                    <p>{userAddress.city} - {userAddress.pincode}, {userAddress.state}</p>
+                  </div>
+                ) : (
+                  <p className="text-red-500 mt-1">No address found</p>
+                )}
+              </div>
+              <button
+                onClick={handleAddAddress}
+                className="text-blue-600 text-sm underline"
+              >
+                {userAddress ? "Change Address" : "Add Address"}
+              </button>
+            </div>
+
+            <div className="mt-6">
+              <button
+                onClick={handlePayment}
+                className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition duration-200"
+              >
+                Pay Now
+              </button>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };
