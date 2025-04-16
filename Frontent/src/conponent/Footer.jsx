@@ -41,9 +41,7 @@ const Footer = () => {
           </div>
 
           {/* ✅ Fixed Button Styling */}
-          <button className="bg-red-500 text-white px-6 py-2 w-full md:w-auto rounded-md shadow-md hover:bg-red-600 transition duration-300">
-            Sign Up
-          </button>
+          
         </div>
       </div>
 
