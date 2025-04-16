@@ -67,6 +67,8 @@ function MainLayout({ auth, setAuth })  {
           <Route path="/signup" element={<Signup />} />
           <Route path="/help" element={<MedicalHelp />} />
           <Route path="/address" element={<AddressForm />} />
+          <Route path="/orders" element={<OrderPage />} />
+
 
           {/* 🔒 Protected User Routes */}
           <Route element={<ProtectedRoute />}>

@@ -8,22 +8,43 @@ const Signup = ({ setAuth }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
+  const handleSignup = async (event) => {
+    event.preventDefault(); // Prevent the default form submission
+  
     try {
-      const { data } = await axios.post("http://localhost:5000/api/auth/signup", {
-        name,
-        email,
-        password,
+      const res = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,        // Use user-entered name from state
+          email,       // Use user-entered email from state
+          password,    // Use user-entered password from state
+        }),
       });
-
-      localStorage.setItem("userToken", data.token); // Save JWT token
-      setAuth(true); // Update auth state if you’re tracking it
-      navigate("/"); // Redirect to home
-    } catch (error) {
-      alert("Signup failed. Try again.");
+  
+      const data = await res.json();
+      if (!res.ok) {
+        // If the response is not ok, throw an error
+        throw new Error(data.message || "Signup failed");
+      }
+  
+      localStorage.setItem("token", data.token);
+      console.log("Signup successful", data);
+  
+      navigate("/login"); // Navigate to the login page
+    } catch (err) {
+      // Check if the error message indicates the user is already registered
+      if (err.message === "User already registered") {
+        alert("This email is already registered. Please log in instead.");
+      } else {
+        alert("Signup failed. Please try again."); // Generic error message
+      }
+      console.error("Signup error:", err.message);
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-green-100 to-blue-200">

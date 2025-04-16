@@ -15,11 +15,13 @@ const orderSchema = new mongoose.Schema({
     default: "Processing",
   },
   user: {
+    userId: String, // ✅ Add this to store JWT user ID
     name: String,
     address: String,
     phone: String,
     paymentMethod: String,
   },
+  
 });
 
 module.exports = mongoose.model("Order", orderSchema);

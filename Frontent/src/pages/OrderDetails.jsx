@@ -43,7 +43,7 @@ const OrderDetails = () => {
       const data = await res.json();
 
       const options = {
-        key: "rzp_test_xfdz8hdehyaXJT", // Replace with your actual Razorpay key
+        key:"rzp_test_xfdz8hdehyaXJT", // Your Razorpay key
         amount: data.amount,
         currency: data.currency,
         name: "Your Medical Store",
@@ -51,7 +51,7 @@ const OrderDetails = () => {
         order_id: data.id,
         handler: async function (response) {
           alert("✅ Payment Successful!");
-        
+
           const newOrder = {
             id: response.razorpay_payment_id,
             status: "Paid",
@@ -70,27 +70,30 @@ const OrderDetails = () => {
               image: `http://localhost:5000/uploads/${item.image.split("/").pop()}`,
             })),
           };
-        
-          // ⬇️ Save to MongoDB (your backend)
+
+          // ✅ Token-based Authorization
+          const token = localStorage.getItem("token");
+
           try {
             await fetch("http://localhost:5000/api/orders", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
               },
               body: JSON.stringify(newOrder),
             });
           } catch (error) {
             console.error("Error saving order to MongoDB:", error);
           }
-        
-          // ⬇️ Optional: Also save to localStorage
+
+          // Optional: Save locally
           const previousOrders = JSON.parse(localStorage.getItem("orders")) || [];
           localStorage.setItem("orders", JSON.stringify([newOrder, ...previousOrders]));
-        
+
+          // 🔁 Redirect
           navigate("/orderpage");
-        }
-        ,
+        },
         prefill: {
           name: userAddress?.fullName,
           contact: userAddress?.mobile,

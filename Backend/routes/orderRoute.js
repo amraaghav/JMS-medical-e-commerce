@@ -1,28 +1,29 @@
+// routes/orders.js
 const express = require("express");
 const router = express.Router();
 const Order = require("../models/Order");
+const verifyToken = require("../middleware/authMiddleware");
 
+// ➕ Create new order (after Razorpay success)
 router.post("/", async (req, res) => {
   try {
     const newOrder = new Order(req.body);
-    const savedOrder = await newOrder.save();
-    res.status(201).json(savedOrder);
+    const saved = await newOrder.save();
+    res.status(201).json(saved);
   } catch (err) {
-    res.status(500).json({ error: "Failed to save order" });
+    res.status(500).json({ message: "Error saving order" });
   }
 });
 
-router.get("/", async (req, res) => {
+// ✅ Get logged-in user's orders
+router.get("/", verifyToken, async (req, res) => {
   try {
-    const orders = await Order.find();
+    const userId = req.user.id;
+    const orders = await Order.find({ "user.id": userId });
     res.json(orders);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch orders" });
+    res.status(500).json({ message: "Error fetching orders" });
   }
 });
-
-
-
-
 
 module.exports = router;

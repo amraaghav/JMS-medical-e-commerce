@@ -1,25 +1,25 @@
-// middleware/verifyToken.js
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 
-const verifyToken = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+const verifyToken = (req, res, next) => {
+  const rawHeader = req.headers['authorization']; // safer way
+  console.log("Authorization header:", rawHeader); // ✅ should show Bearer ...
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
+  const token = rawHeader?.replace("Bearer ", "");
+  console.log("Token received in backend:", token); // ✅ should show only token part
+
+  if (!token) {
+    return res.status(401).json({ message: "No token, authorization denied" });
   }
 
   try {
-    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    req.user = decoded;
 
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    req.user = user;
+    console.log("Decoded user from token:", req.user);
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid token" });
+    console.error("Token verification error:", err);
+    res.status(401).json({ message: "Invalid token" });
   }
 };
 

@@ -13,33 +13,48 @@ const SignIn = ({ setAuth }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // Check if both email and password are provided
     if (!email || !password) {
       setError("Both email and password are required.");
       return;
     }
 
-    setLoading(true);
-    setError("");
+    setLoading(true);  // Set loading state
+    setError("");  // Clear previous error
 
     try {
-      const { data } = await axios.post("http://localhost:5000/api/auth/signin", {
+      // Send login request to the server
+      const { data } = await axios.post("http://localhost:5000/api/auth/login", {
         email,
         password,
       });
 
+      // Log the received token (can be removed after testing)
       console.log("Login Success. Token:", data.token);
-      localStorage.setItem("userToken", data.token);
+
+      // Store the received token in localStorage
+     localStorage.setItem("userToken", data.token);
+
+      
+      // Set authentication state to true (user is logged in)
       setAuth(true);
 
-      // Slight delay to allow state update
+      // Clear the form fields after successful login
+      setEmail("");
+      setPassword("");
+
+      // Redirect to home or dashboard after login
       setTimeout(() => {
-        navigate("/");
-      }, 100);
+        navigate("/"); // You can change this to any page you want the user to go after login
+      }, 100); // Slight delay to allow state update
     } catch (err) {
       console.error("Login error:", err);
-      setError("Invalid email or password");
+
+      // Check if error has a specific message from backend
+      const errorMessage = err.response?.data?.message || "Invalid email or password";
+      setError(errorMessage); // Show the error message to the user
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop the loading state after API call
     }
   };
 
@@ -51,10 +66,12 @@ const SignIn = ({ setAuth }) => {
       >
         <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Sign In</h2>
 
+        {/* Show error message if there is any */}
         {error && (
           <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
         )}
 
+        {/* Email input */}
         <input
           className="border p-2 mb-4 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           type="email"
@@ -63,6 +80,7 @@ const SignIn = ({ setAuth }) => {
           onChange={(e) => setEmail(e.target.value)}
         />
 
+        {/* Password input */}
         <input
           className="border p-2 mb-6 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           type="password"
@@ -71,14 +89,16 @@ const SignIn = ({ setAuth }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
+        {/* Submit button */}
         <button
           className="bg-blue-600 hover:bg-blue-700 text-white py-2 w-full rounded-md font-semibold transition"
           type="submit"
-          disabled={loading}
+          disabled={loading} // Disable button while loading
         >
           {loading ? "Logging in..." : "Login"}
         </button>
 
+        {/* Link to Sign Up page */}
         <p className="text-sm mt-4 text-center">
           Don't have an account?{" "}
           <Link

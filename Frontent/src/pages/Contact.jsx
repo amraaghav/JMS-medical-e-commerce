@@ -13,26 +13,31 @@ const Contact = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    setSubmitted(true);
 
-    // Reset form after submission
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: "", email: "", message: "" });
-    }, 3000);
+    try {
+      const response = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({ name: "", email: "", message: "" });
+        setTimeout(() => setSubmitted(false), 3000);
+      } else {
+        alert("Message failed to send. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("An error occurred. Try again later.");
+    }
   };
-  const backgroundStyle = {
-    backgroundImage: "url('/images/background.png')",
-    backgroundSize: "cover",
-  
-};
 
   return (
-    
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg my-10" >
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg my-10">
       <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Contact Us</h2>
 
       {submitted && <p className="text-green-600 text-center">Message sent successfully!</p>}
@@ -91,7 +96,15 @@ const Contact = () => {
 
       {/* Google Maps Embed */}
       <div className="mt-6">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7198.7941197271!2d84.66104415586503!3d25.558453545152595!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398d5f58a0d42be1%3A0xb802c68a32c1aa04!2sArrah%2C%20Bihar!5e0!3m2!1sen!2sin!4v1742232567146!5m2!1sen!2sin" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7198.7941197271!2d84.66104415586503!3d25.558453545152595!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398d5f58a0d42be1%3A0xb802c68a32c1aa04!2sArrah%2C%20Bihar!5e0!3m2!1sen!2sin!4v1742232567146!5m2!1sen!2sin"
+          width="100%"
+          height="450"
+          style={{ border: 0 }}
+          allowFullScreen=""
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        ></iframe>
       </div>
     </div>
   );

@@ -3,40 +3,23 @@ const router = express.Router();
 const User = require("../models/User");
 const verifyToken = require("../middleware/authMiddleware");
 
-// @desc    Get user profile
-// @route   GET /api/user/profile
+// @desc    Get user's profile info
+// @route   GET /api/user/details
 // @access  Private
-router.get("/profile", verifyToken, async (req, res) => {
+router.get("/details", verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// @desc    Update user profile
-// @route   PUT /api/user/profile
-// @access  Private
-router.put("/profile", verifyToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    user.username = req.body.username || user.username;
-    user.email = req.body.email || user.email;
-
-    const updatedUser = await user.save();
+    console.log("Authenticated user ID:", req.user.id); // 👈 Add this
+    const user = await User.findById(req.user.id).select("name email phone profileImage");
 
     res.status(200).json({
-      message: "Profile updated successfully",
-      username: updatedUser.username,
-      email: updatedUser.email,
+      name: user.name,
+      email: user.email,
+      phone: user.phone || "",
+      profileImage: user.profileImage || "",
     });
   } catch (error) {
-    console.error("Update error:", error);
-    res.status(500).json({ message: "Failed to update profile" });
+    console.error("Error fetching user details:", error.message);
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
 });
 

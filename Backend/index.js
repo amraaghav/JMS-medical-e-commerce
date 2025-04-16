@@ -8,7 +8,8 @@ const authMiddleware = require("./middleware/authMiddleware");
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/items");
 const addProductRoute = require("./routes/addProduct");
-
+const jwt = require('jsonwebtoken');
+const contactRoute = require("./routes/contactRoute");
 
 
 const app = express();
@@ -27,7 +28,6 @@ app.use("/api/user", userRoutes);
 
 app.get("/api/cart", authMiddleware, (req, res) => res.json({ message: "Your cart items are here." }));
 app.get("/api/profile", authMiddleware, (req, res) => res.json({ message: "Your profile details" }));
-app.get("/api/orders", authMiddleware, (req, res) => res.json({ message: "Your orders list" }));
 
 // Public product routes
 app.get("/api/products", async (req, res) => {
@@ -56,11 +56,16 @@ app.use("/api/payment", razorpayRoute);
 
 
 
+
+
 // Import and use the order route
 const orderRoutes = require("./routes/orderRoute");
 app.use("/api/orders", orderRoutes);
 
 
+
+
+app.use("/api/contact", contactRoute);
 
 
 
