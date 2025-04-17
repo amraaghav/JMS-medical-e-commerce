@@ -13,6 +13,7 @@ import AdminPanel from "./admin/AdminPanel";
 import AddItems from "./admin/AddItems";
 import ListItems from "./admin/ListItems";
 import AdminLogin from "./admin/AdminLogin";
+import Orders from "./admin/Orders";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import ProductGallery from "./pages/ProductGallery";
@@ -87,6 +88,9 @@ function MainLayout({ auth, setAuth })  {
               <Route index element={<AdminPanel />} />
               <Route path="add-items" element={<AddItems />} />
               <Route path="list-items" element={<ListItems />} />
+              <Route path="orders" element={<Orders />} />
+              
+              
             </Route>
           </Route>
         </Routes>

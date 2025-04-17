@@ -53,8 +53,6 @@ const OrderDetails = () => {
           alert("✅ Payment Successful!");
 
           const newOrder = {
-            id: response.razorpay_payment_id,
-            status: "Paid",
             total: totalAmount,
             user: {
               name: userAddress?.fullName,
@@ -63,16 +61,17 @@ const OrderDetails = () => {
               paymentMethod: "Razorpay",
             },
             items: orders.map((item) => ({
-              id: item.id,
               name: item.name,
               price: item.price,
               quantity: item.quantity,
               image: `http://localhost:5000/uploads/${item.image.split("/").pop()}`,
             })),
           };
+          
 
           // ✅ Token-based Authorization
-          const token = localStorage.getItem("token");
+          const token =localStorage.getItem("userToken");
+
 
           try {
             await fetch("http://localhost:5000/api/orders", {
@@ -81,8 +80,9 @@ const OrderDetails = () => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
-              body: JSON.stringify(newOrder),
+              body: JSON.stringify(newOrder), // no need to add userId manually
             });
+            
           } catch (error) {
             console.error("Error saving order to MongoDB:", error);
           }
@@ -135,7 +135,6 @@ const OrderDetails = () => {
                 <p className="font-semibold text-lg">₹{order.price}</p>
               </div>
             </div>
-
             <div className="mt-6 border-t pt-4">
               <h3 className="font-semibold text-lg mb-2">Bill Summary</h3>
               <div className="flex justify-between text-sm text-gray-700">

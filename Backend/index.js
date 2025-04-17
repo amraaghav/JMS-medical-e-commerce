@@ -10,6 +10,7 @@ const productRoutes = require("./routes/items");
 const addProductRoute = require("./routes/addProduct");
 const jwt = require('jsonwebtoken');
 const contactRoute = require("./routes/contactRoute");
+const adminOrderRoutes = require("./routes/adminOrderRoutes"); // admin side
 
 
 const app = express();
@@ -64,8 +65,12 @@ app.use("/api/orders", orderRoutes);
 
 
 
+app.use("/api/admin/orders", require("./routes/orderRoute"));
+app.use("/api/admin/orders", adminOrderRoutes);
 
 app.use("/api/contact", contactRoute);
+
+
 
 
 
