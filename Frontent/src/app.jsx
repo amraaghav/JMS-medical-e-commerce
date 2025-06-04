@@ -24,7 +24,7 @@ import Cart from "./pages/Cart";
 import OrderPage from "./pages/Order";
 import OrderDetails from "./pages/OrderDetails";
 import MedicalHelp from "./pages/Help";
-import ProtectedRoute from "./routes/ProtectedRoute"; // Import the protected route
+import ProtectedRoute from "./routes/ProtectedRoute";
 import Logout from "./pages/Logout";
 import AddressForm from "./pages/AddressForm"; 
 

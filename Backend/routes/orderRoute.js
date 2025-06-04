@@ -113,7 +113,7 @@ router.put("/orders/:id/status", verifyToken, async (req, res) => {
 
 
 
-router.delete("/orders/:id", verifyToken, async (req, res) => {
+router.delete("/order:id", verifyToken, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
@@ -122,6 +122,25 @@ router.delete("/orders/:id", verifyToken, async (req, res) => {
     res.json({ message: "Order cancelled" });
   } catch (err) {
     res.status(500).json({ message: "Error cancelling order" });
+  }
+});
+
+
+
+
+// PUT /api/orders/:id/cancel
+// PUT /api/orders/:id/cancel
+router.put("/orders/:id/cancel", verifyToken, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    order.status = "Cancelled";
+    await order.save();
+
+    res.json({ message: "Order cancelled", order });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
